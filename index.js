@@ -43,11 +43,13 @@ function newMemberArrayToObject(member) {
  * @param {Object[]} collection - an array of yoga class objects
  * @return {Object[]} - the reshaped collection where the classes are grouped by instructor name
  */
-function groupClassByInstructor(collection) {
-  const groupedClasses = _.groupBy(collection, 'instructor');
-const result = _.map(groupedClasses, (classes, instructor) => ({
-  instructor, classes, }));
-  return result;
+function groupClassByInstructor(classes) {
+const groupedClasses = _.groupBy(collection, 'instructor');
+const result = Object.entries(groupedClasses).map(([instructor, classes])=>
+({instructor,
+classes,
+ }));
+ return result;
 }
 
 
@@ -68,10 +70,14 @@ function omitAgeFromMembers(members) {
  * @return {number} The sum of the numbers in an array
  */
 function countClassesByInstructor(collection, instructorName) {
-  const instructorClasses = _.filter(collection, { instructor : instructorName });
-  const classCount = _.size(instructorClasses);
+ const instructorClasses = _.get(collection, instructorName, []);
+  if(_.has(collection, instructorName)) {
+
+      return collection[instructorName].length;
+  }else {
     
-        return classCount;
+        return "There is no instructor by that name.";
+  }
 }
 
 /**
